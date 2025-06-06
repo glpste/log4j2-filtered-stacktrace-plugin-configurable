@@ -1,4 +1,4 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;

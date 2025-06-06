@@ -1,4 +1,4 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
 import lombok.Builder;
 import org.apache.logging.log4j.Level;

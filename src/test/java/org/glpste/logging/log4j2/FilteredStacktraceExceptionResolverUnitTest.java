@@ -1,7 +1,7 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
-import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
-import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
+import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
+import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
