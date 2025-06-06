@@ -8,6 +8,7 @@ import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverCo
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
  * @author Copied from Apache log4j2 and modified by takanuva15
  */
 class FilteredStacktraceExceptionResolver implements EventResolver {
-    private static List<String> packagesToRemoveFromStacktrace = Arrays.asList(
+    private static final List<String> packagesToRemoveFromStacktrace = Arrays.asList(
             "com.ibm.ejs.",
             "com.ibm.tx.",
             "com.ibm.websphere.jaxrs.",
@@ -40,11 +41,11 @@ class FilteredStacktraceExceptionResolver implements EventResolver {
         List<String> additionalPackagesToIgnore = config.getList("additionalPackagesToIgnore", String.class);
 
         if (additionalPackagesToIgnore == null) {
-            additionalPackagesToIgnore = Arrays.asList();
+            additionalPackagesToIgnore = Collections.emptyList();
         }
 
         if (whitelistPackages == null) {
-            whitelistPackages = Arrays.asList();
+            whitelistPackages = Collections.emptyList();
         }
 
         this.internalResolver = new FilteredStacktraceStackTraceJsonResolver(context, Stream.concat(packagesToRemoveFromStacktrace.stream(), additionalPackagesToIgnore.stream())
