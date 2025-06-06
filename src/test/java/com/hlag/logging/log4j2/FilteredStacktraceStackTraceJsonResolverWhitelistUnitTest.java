@@ -1,5 +1,9 @@
 package com.hlag.logging.log4j2;
 
+import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
+import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_STACK_FIELD;
+import static com.hlag.logging.log4j2.JsonTemplateFieldConfig.FIELD_DEFAULT_STACK;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
@@ -34,7 +38,7 @@ class FilteredStacktraceStackTraceJsonResolverWhitelistUnitTest {
         Mockito.when(mockedEventResolverContext.getMaxStringByteCount()).thenReturn(60000);
 
         // sets the package whitelist
-        Mockito.when(mockedConfig.getList("whitelistPackages", String.class)).thenReturn(Collections.singletonList("com.hlag.logging.log4j2"));
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(Collections.singletonList("com.hlag.logging.log4j2"));
 
         jsonWriter = JsonWriter.newBuilder().setMaxStringLength(60000).setTruncatedStringSuffix("...").build();
 
@@ -50,7 +54,7 @@ class FilteredStacktraceStackTraceJsonResolverWhitelistUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get("stack").toString().split(System.lineSeparator()))
+        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK).toString().split(System.lineSeparator()))
                 .filteredOn(line -> line.startsWith("\tat "))
                 .allSatisfy(line -> Assertions.assertThat(line).startsWith("\tat com.hlag.logging.log4j2."));
     }
