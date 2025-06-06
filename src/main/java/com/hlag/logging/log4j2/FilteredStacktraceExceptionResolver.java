@@ -7,8 +7,6 @@ import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,36 +18,27 @@ import java.util.stream.Stream;
  * @author Copied from Apache log4j2 and modified by takanuva15
  */
 class FilteredStacktraceExceptionResolver implements EventResolver {
-    private static final List<String> packagesToRemoveFromStacktrace = Arrays.asList(
-            "com.ibm.ejs.",
-            "com.ibm.tx.",
-            "com.ibm.websphere.jaxrs.",
-            "com.ibm.ws.",
-            "java.lang.",
-            "java.security.",
-            "java.util.concurrent.",
-            "javax.servlet.",
-            "jdk.internal.",
-            "org.apache.cxf.",
-            "org.hibernate.validator.cdi.",
-            "org.jboss.weld.");
+
+    public static final String PROPERTY_LIST_ALLOW = "allowedPackages";
+    public static final String PROPERTY_LIST_FILTER = "filteredPackages";
+    public static final String PROPERTY_NAME_FIELD = "nameField";
+    public static final String PROPERTY_MESSAGE_FIELD = "messageField";
+    public static final String PROPERTY_STACK_FIELD = "stackField";
+    public static final String PROPERTY_COUNT_FIELD = "countField";
 
     private final TemplateResolver<Throwable> internalResolver;
 
-    FilteredStacktraceExceptionResolver(EventResolverContext context, TemplateResolverConfig config) {
-        List<String> whitelistPackages = config.getList("whitelistPackages", String.class);
-        List<String> additionalPackagesToIgnore = config.getList("additionalPackagesToIgnore", String.class);
+    FilteredStacktraceExceptionResolver(EventResolverContext context, TemplateResolverConfig resolverConfig) {
+        JsonTemplateFieldConfig fieldConfig = new JsonTemplateFieldConfig.Builder()
+                .nameField(resolverConfig.getString(PROPERTY_NAME_FIELD))
+                .messageField(resolverConfig.getString(PROPERTY_MESSAGE_FIELD))
+                .stackField(resolverConfig.getString(PROPERTY_STACK_FIELD))
+                .countField(resolverConfig.getString(PROPERTY_COUNT_FIELD))
+                .allowedPackages(resolverConfig.getList(PROPERTY_LIST_ALLOW, String.class))
+                .filteredPackages(resolverConfig.getList(PROPERTY_LIST_FILTER, String.class))
+                .build();
 
-        if (additionalPackagesToIgnore == null) {
-            additionalPackagesToIgnore = Collections.emptyList();
-        }
-
-        if (whitelistPackages == null) {
-            whitelistPackages = Collections.emptyList();
-        }
-
-        this.internalResolver = new FilteredStacktraceStackTraceJsonResolver(context, Stream.concat(packagesToRemoveFromStacktrace.stream(), additionalPackagesToIgnore.stream())
-                .collect(Collectors.toList()), whitelistPackages);
+        this.internalResolver = new FilteredStacktraceStackTraceJsonResolver(context, fieldConfig);
     }
 
     @Override

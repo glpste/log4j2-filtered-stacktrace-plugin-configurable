@@ -1,5 +1,8 @@
 package com.hlag.logging.log4j2;
 
+import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
+import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
@@ -38,8 +41,8 @@ class FilteredStacktraceExceptionResolverUnitTest {
         Mockito.lenient().when(mockedEventResolverContext.getRecyclerFactory()).thenReturn(new QueueingRecyclerFactory(LinkedList::new));
         Mockito.lenient().when(mockedEventResolverContext.getMaxStringByteCount()).thenReturn(10000);
 
-        Mockito.when(mockedConfig.getList("additionalPackagesToIgnore", String.class)).thenReturn(PACKAGE_TO_REMOVE_FROM_STACKTRACE);
-        Mockito.when(mockedConfig.getList("whitelistPackages", String.class)).thenReturn(new ArrayList<>());
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_FILTER, String.class)).thenReturn(PACKAGE_TO_REMOVE_FROM_STACKTRACE);
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(new ArrayList<>());
 
         jsonWriter = JsonWriter.newBuilder().setMaxStringLength(10000).setTruncatedStringSuffix("...").build();
 
@@ -48,7 +51,7 @@ class FilteredStacktraceExceptionResolverUnitTest {
 
     @Test
     void shouldBeAbleToCreateInstance_whenConstructor_givenAdditionalPackagesIsNull() {
-        Mockito.when(mockedConfig.getList("additionalPackagesToIgnore", String.class)).thenReturn(null);
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_FILTER, String.class)).thenReturn(null);
 
         NullPointerException e = Assertions.catchThrowableOfType(() -> new FilteredStacktraceExceptionResolver(mockedEventResolverContext, mockedConfig), NullPointerException.class);
         Assertions.assertThat(e).isNull();
@@ -56,7 +59,7 @@ class FilteredStacktraceExceptionResolverUnitTest {
 
     @Test
     void shouldBeAbleToCreateInstance_whenConstructor_givenWhitelistIsNull() {
-        Mockito.when(mockedConfig.getList("whitelistPackages", String.class)).thenReturn(null);
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(null);
 
         NullPointerException e = Assertions.catchThrowableOfType(() -> new FilteredStacktraceExceptionResolver(mockedEventResolverContext, mockedConfig), NullPointerException.class);
         Assertions.assertThat(e).isNull();

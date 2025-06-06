@@ -22,20 +22,22 @@ import java.util.function.Supplier;
  */
 class FilteredStacktraceStackTraceJsonResolver implements TemplateResolver<Throwable> {
     private final Recycler<TruncatingBufferedPrintWriter> destWriterRecycler;
-    private final List<String> packagePrefixesToFilter;
-    private final List<String> whitelistPackages;
+    private final List<String> filteredPackages;
+    private final List<String> allowedPackages;
+    private final JsonTemplateFieldConfig fieldConfig;
 
-    FilteredStacktraceStackTraceJsonResolver(EventResolverContext context, List<String> packagePrefixesToFilter, List<String> whitelistPackages) {
+    FilteredStacktraceStackTraceJsonResolver(EventResolverContext context, JsonTemplateFieldConfig fieldConfig) {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier = () -> TruncatingBufferedPrintWriter.ofCapacity(context.getMaxStringByteCount());
         final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
 
-        if (whitelistPackages == null) {
+        if (fieldConfig.getAllowedPackages() == null) {
             throw new IllegalArgumentException();
         }
 
         this.destWriterRecycler = recyclerFactory.create(writerSupplier, TruncatingBufferedPrintWriter::close);
-        this.packagePrefixesToFilter = packagePrefixesToFilter;
-        this.whitelistPackages = whitelistPackages;
+        this.filteredPackages = fieldConfig.getFilteredPackages();
+        this.allowedPackages = fieldConfig.getAllowedPackages();
+        this.fieldConfig = fieldConfig;
     }
 
     @Override
@@ -82,12 +84,12 @@ class FilteredStacktraceStackTraceJsonResolver implements TemplateResolver<Throw
                 }
             }
 
-            jsonAttributes.put("stack", stacktraceAsStringWriter.toString());
-            jsonAttributes.put("totalFilteredElements", totalLinesFiltered);
+            jsonAttributes.put(fieldConfig.getStackField(), stacktraceAsStringWriter.toString());
+            jsonAttributes.put(fieldConfig.getCountField(), totalLinesFiltered);
         }
 
-        jsonAttributes.put("message", throwable.getMessage());
-        jsonAttributes.put("name", throwable.getClass().getName());
+        jsonAttributes.put(fieldConfig.getMessageField(), throwable.getMessage());
+        jsonAttributes.put(fieldConfig.getNameField(), throwable.getClass().getName());
 
         jsonWriter.writeObject(jsonAttributes);
     }
@@ -109,18 +111,18 @@ class FilteredStacktraceStackTraceJsonResolver implements TemplateResolver<Throw
     }
 
     private boolean classIsInFilteredPackage(String className) {
-        for (String prefix : whitelistPackages) {
+        for (String prefix : allowedPackages) {
             if (className.startsWith(prefix)) {
                 return false;
             }
         }
 
         // if a whitelist is present everything else is blacklisted
-        if (! whitelistPackages.isEmpty()) {
+        if (! allowedPackages.isEmpty()) {
             return true;
         }
 
-        for (String prefix : packagePrefixesToFilter) {
+        for (String prefix : filteredPackages) {
             if (className.startsWith(prefix)) {
                 return true;
             }
