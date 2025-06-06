@@ -1,4 +1,4 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;

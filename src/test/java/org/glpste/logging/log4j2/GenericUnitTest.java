@@ -1,4 +1,4 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
 import org.junit.jupiter.api.Test;
 import org.objectweb.asm.ClassReader;

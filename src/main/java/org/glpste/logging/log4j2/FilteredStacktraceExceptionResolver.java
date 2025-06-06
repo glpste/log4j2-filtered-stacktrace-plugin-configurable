@@ -1,4 +1,4 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
@@ -6,10 +6,6 @@ import org.apache.logging.log4j.layout.template.json.resolver.EventResolverConte
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Defines a custom resolver to remove stacktrace lines that are irrelevant.

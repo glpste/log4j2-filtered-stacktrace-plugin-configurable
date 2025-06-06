@@ -1,8 +1,8 @@
-package com.hlag.logging.log4j2;
+package org.glpste.logging.log4j2;
 
-import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
-import static com.hlag.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
-import static com.hlag.logging.log4j2.JsonTemplateFieldConfig.FIELD_DEFAULT_STACK;
+import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
+import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
+import static org.glpste.logging.log4j2.JsonTemplateFieldConfig.FIELD_DEFAULT_STACK;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
@@ -39,7 +39,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
         Mockito.when(mockedEventResolverContext.getMaxStringByteCount()).thenReturn(60000);
 
         // this ensures that the internal mechanism of adding packages is working
-        Mockito.when(mockedConfig.getList(PROPERTY_LIST_FILTER, String.class)).thenReturn(Collections.singletonList("com.hlag.logging.log4j2"));
+        Mockito.when(mockedConfig.getList(PROPERTY_LIST_FILTER, String.class)).thenReturn(Collections.singletonList("org.glpste.logging.log4j2"));
         Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(new ArrayList<>());
 
         jsonWriter = JsonWriter.newBuilder().setMaxStringLength(60000).setTruncatedStringSuffix("...").build();

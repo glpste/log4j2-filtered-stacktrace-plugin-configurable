@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.hlag.logging</groupId>
-    <artifactId>log4j2-stacktrace-filter</artifactId>
+    <groupId>org.glpste.logging</groupId>
+    <artifactId>log4j2-stacktrace-filter-configurable</artifactId>
     <!-- do not change this version. Done by the pipeline before pushing the artifact to Maven Central -->
     <version>1.0.0-SNAPSHOT</version>
-    <name>Stacktrace filter for Log4j2</name>
+    <name>Configurable Stacktrace filter for Log4j2</name>
     <description>Filters the stacktrace to reduce the size by removing irrelevant packages.</description>
-    <url>https://github.com/Hapag-Lloyd/log4j2-filtered-stacktrace-plugin</url>
+    <url>https://github.com/glpste/log4j2-filtered-stacktrace-plugin-configurable</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -19,6 +19,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <!-- TODO: Uncomment the licenses and developers section if you want to publish this plugin to Maven Central -->
+    <!--
     <licenses>
         <license>
             <name>Apache 2.0</name>
@@ -33,10 +35,12 @@
         </developer>
     </developers>
 
+    -->
+
     <scm>
-        <connection>scm:git:git://github.com/Hapag-Lloyd/log4j2-filtered-stacktrace-plugin.git</connection>
-        <developerConnection>scm:git:ssh://gitHub.com:Hapag-Lloyd/log4j2-filtered-stacktrace-plugin.git</developerConnection>
-        <url>https://github.com/Hapag-Lloyd/log4j2-filtered-stacktrace-plugin/tree/main</url>
+        <connection>scm:git:git://github.com/glpste/log4j2-filtered-stacktrace-plugin-configurable.git</connection>
+        <developerConnection>scm:git:ssh://gitHub.com:glpste/log4j2-filtered-stacktrace-plugin-configurable.git</developerConnection>
+        <url>https://github.com/glpste/log4j2-filtered-stacktrace-plugin-configurable/tree/main</url>
     </scm>
 
     <distributionManagement>
