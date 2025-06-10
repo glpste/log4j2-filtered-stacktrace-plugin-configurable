@@ -18,6 +18,11 @@ public final class FilteredStacktraceExceptionResolverFactory implements EventRe
 
     private FilteredStacktraceExceptionResolverFactory() {}
 
+    /**
+     * Factory method to get the singleton instance of this factory.
+     *
+     * @return the singleton instance of {@link FilteredStacktraceExceptionResolverFactory}.
+     */
     @PluginFactory
     public static FilteredStacktraceExceptionResolverFactory getInstance() {
         return INSTANCE;
