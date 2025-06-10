@@ -15,23 +15,16 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  */
 class FilteredStacktraceExceptionResolver implements EventResolver {
 
-    public static final String PROPERTY_LIST_ALLOW = "allowedPackages";
-    public static final String PROPERTY_LIST_FILTER = "filteredPackages";
-    public static final String PROPERTY_NAME_FIELD = "nameField";
-    public static final String PROPERTY_MESSAGE_FIELD = "messageField";
-    public static final String PROPERTY_STACK_FIELD = "stackField";
-    public static final String PROPERTY_COUNT_FIELD = "countField";
-
     private final TemplateResolver<Throwable> internalResolver;
 
     FilteredStacktraceExceptionResolver(EventResolverContext context, TemplateResolverConfig resolverConfig) {
-        JsonTemplateFieldConfig fieldConfig = new JsonTemplateFieldConfig.Builder()
-                .nameField(resolverConfig.getString(PROPERTY_NAME_FIELD))
-                .messageField(resolverConfig.getString(PROPERTY_MESSAGE_FIELD))
-                .stackField(resolverConfig.getString(PROPERTY_STACK_FIELD))
-                .countField(resolverConfig.getString(PROPERTY_COUNT_FIELD))
-                .allowedPackages(resolverConfig.getList(PROPERTY_LIST_ALLOW, String.class))
-                .filteredPackages(resolverConfig.getList(PROPERTY_LIST_FILTER, String.class))
+        JsonTemplateFieldConfig fieldConfig = JsonTemplateFieldConfig.builder()
+                .nameField(resolverConfig.getString(ConfigProperty.NAME.getKey()))
+                .messageField(resolverConfig.getString(ConfigProperty.MESSAGE.getKey()))
+                .stackField(resolverConfig.getString(ConfigProperty.STACK.getKey()))
+                .countField(resolverConfig.getString(ConfigProperty.COUNT.getKey()))
+                .allowedPackages(resolverConfig.getList(ConfigProperty.LIST_ALLOW.getKey(), String.class))
+                .filteredPackages(resolverConfig.getList(ConfigProperty.LIST_FILTER.getKey(), String.class))
                 .build();
 
         this.internalResolver = new FilteredStacktraceStackTraceJsonResolver(context, fieldConfig);
@@ -52,4 +45,5 @@ class FilteredStacktraceExceptionResolver implements EventResolver {
     public boolean isResolvable(final LogEvent logEvent) {
         return logEvent.getThrown() != null;
     }
+
 }

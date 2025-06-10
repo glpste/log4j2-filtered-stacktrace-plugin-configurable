@@ -1,9 +1,5 @@
 package org.glpste.logging.log4j2;
 
-import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
-import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_FILTER;
-import static org.glpste.logging.log4j2.JsonTemplateFieldConfig.FIELD_DEFAULT_STACK;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
 import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
@@ -39,8 +35,8 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
         Mockito.when(mockedEventResolverContext.getMaxStringByteCount()).thenReturn(60000);
 
         // this ensures that the internal mechanism of adding packages is working
-        Mockito.when(mockedConfig.getList(PROPERTY_LIST_FILTER, String.class)).thenReturn(Collections.singletonList("org.glpste.logging.log4j2"));
-        Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(new ArrayList<>());
+        Mockito.when(mockedConfig.getList(ConfigProperty.LIST_FILTER.getKey(), String.class)).thenReturn(Collections.singletonList("org.glpste.logging.log4j2"));
+        Mockito.when(mockedConfig.getList(ConfigProperty.LIST_ALLOW.getKey(), String.class)).thenReturn(new ArrayList<>());
 
         jsonWriter = JsonWriter.newBuilder().setMaxStringLength(60000).setTruncatedStringSuffix("...").build();
 
@@ -56,7 +52,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get("name")).isEqualTo("java.lang.ArithmeticException");
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.NAME.getDefaultValue())).isEqualTo("java.lang.ArithmeticException");
     }
 
     @Test
@@ -68,7 +64,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get("message")).isEqualTo("/ by zero");
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.MESSAGE.getDefaultValue())).isEqualTo("/ by zero");
     }
 
     @Test
@@ -92,7 +88,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
         // the exact number of lines is not important and depends on the Java version used
-        Assertions.assertThat(actualLogOutput.get("totalFilteredElements")).isNotEqualTo(0);
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.COUNT.getDefaultValue())).isNotEqualTo(0);
     }
 
     @Test
@@ -105,7 +101,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
         // there are other test cases which make sure that the stacktrace is correct
-        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK)).isNotNull();
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.STACK.getDefaultValue())).isNotNull();
     }
 
     @Test
@@ -117,7 +113,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK).toString().split(System.lineSeparator()))
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.STACK.getDefaultValue()).toString().split(System.lineSeparator()))
                 .filteredOn(line -> line.equals("Caused by java.lang.ArithmeticException: / by zero"))
                 .hasSize(1);
     }
@@ -131,7 +127,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK).toString().split(System.lineSeparator()))
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.STACK.getDefaultValue()).toString().split(System.lineSeparator()))
                 .filteredOn(line -> line.contains("[suppressed "))
                 .hasSize(2);
     }
@@ -146,7 +142,7 @@ class FilteredStacktraceStackTraceJsonResolverUnitTest {
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
         // trying to ignore all non stacktrace lines
-        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK).toString().split(System.lineSeparator()))
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.STACK.getDefaultValue()).toString().split(System.lineSeparator()))
                 .filteredOn(line -> !line.startsWith("\t[suppressed"))
                 .filteredOn(line -> !line.startsWith("Caused by"))
                 .filteredOn(line -> !line.startsWith("java.lang.RuntimeException"))

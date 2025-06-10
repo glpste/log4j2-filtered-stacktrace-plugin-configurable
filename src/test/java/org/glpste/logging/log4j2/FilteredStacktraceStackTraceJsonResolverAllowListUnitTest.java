@@ -1,7 +1,7 @@
 package org.glpste.logging.log4j2;
 
-import static org.glpste.logging.log4j2.FilteredStacktraceExceptionResolver.PROPERTY_LIST_ALLOW;
-import static org.glpste.logging.log4j2.JsonTemplateFieldConfig.FIELD_DEFAULT_STACK;
+import java.util.Collections;
+import java.util.LinkedList;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
@@ -17,11 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.LinkedList;
-
 @ExtendWith(MockitoExtension.class)
-class FilteredStacktraceStackTraceJsonResolverWhitelistUnitTest {
+class FilteredStacktraceStackTraceJsonResolverAllowListUnitTest {
     private FilteredStacktraceExceptionResolver filteredStacktraceExceptionResolver;
 
     private JsonWriter jsonWriter;
@@ -37,7 +34,7 @@ class FilteredStacktraceStackTraceJsonResolverWhitelistUnitTest {
         Mockito.when(mockedEventResolverContext.getMaxStringByteCount()).thenReturn(60000);
 
         // sets the package whitelist
-        Mockito.when(mockedConfig.getList(PROPERTY_LIST_ALLOW, String.class)).thenReturn(Collections.singletonList("com.hlag.logging.log4j2"));
+        Mockito.when(mockedConfig.getList(ConfigProperty.LIST_ALLOW.getKey(), String.class)).thenReturn(Collections.singletonList("com.hlag.logging.log4j2"));
 
         jsonWriter = JsonWriter.newBuilder().setMaxStringLength(60000).setTruncatedStringSuffix("...").build();
 
@@ -53,7 +50,7 @@ class FilteredStacktraceStackTraceJsonResolverWhitelistUnitTest {
 
         JSONObject actualLogOutput = new JSONObject(actualStringOutput);
 
-        Assertions.assertThat(actualLogOutput.get(FIELD_DEFAULT_STACK).toString().split(System.lineSeparator()))
+        Assertions.assertThat(actualLogOutput.get(ConfigProperty.STACK.getDefaultValue()).toString().split(System.lineSeparator()))
                 .filteredOn(line -> line.startsWith("\tat "))
                 .allSatisfy(line -> Assertions.assertThat(line).startsWith("\tat com.hlag.logging.log4j2."));
     }
